@@ -23,6 +23,13 @@ class EntregaController extends Controller
             $query->where('area_id', $request->integer('area_id'));
         }
 
+        if ($request->filled('producto')) {
+            $term = $request->string('producto');
+            $query->whereHas('producto', function ($q) use ($term) {
+                $q->where('nombre', 'like', '%'.$term.'%');
+            });
+        }
+
         if ($request->filled('producto_id')) {
             $query->where('producto_id', $request->integer('producto_id'));
         }
@@ -39,7 +46,8 @@ class EntregaController extends Controller
             $query->whereDate('fecha', '<=', $request->string('hasta'));
         }
 
-        $entregas = $query->orderByDesc('fecha')->paginate(50);
+        $perPage = 50;
+        $entregas = $query->orderByDesc('fecha')->paginate($perPage);
 
         return response()->json([
             'data' => EntregaResource::collection($entregas),
@@ -47,6 +55,7 @@ class EntregaController extends Controller
                 'current_page' => $entregas->currentPage(),
                 'last_page' => $entregas->lastPage(),
                 'total' => $entregas->total(),
+                'per_page' => $entregas->perPage(),
             ],
         ]);
     }
