@@ -27,6 +27,10 @@ class EntregaController extends Controller
             $query->where('producto_id', $request->integer('producto_id'));
         }
 
+        if ($request->query->has('mes')) {
+            $query->whereMonth('fecha', $request->integer('mes') + 1);
+        }
+
         if ($request->filled('desde')) {
             $query->whereDate('fecha', '>=', $request->string('desde'));
         }

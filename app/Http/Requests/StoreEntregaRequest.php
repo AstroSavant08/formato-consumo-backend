@@ -21,6 +21,7 @@ class StoreEntregaRequest extends FormRequest
             'unidad' => ['required', 'string', 'max:20'],
             'quien_recibe' => ['required', 'string', 'max:255'],
             'entregado_por' => ['required', 'string', 'max:255'],
+            'fuente' => ['prohibited'],
         ];
     }
 }
