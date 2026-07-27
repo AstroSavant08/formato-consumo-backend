@@ -4,12 +4,19 @@ namespace Tests\Feature;
 
 use App\Models\ConsumoPlan;
 use App\Models\Producto;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class FormatoPedidoApiTest extends TestCase
 {
     use RefreshDatabase;
+
+    private function authenticate(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+    }
 
     private function buildMesesCantidad(array $overrides = []): array
     {
@@ -95,6 +102,7 @@ class FormatoPedidoApiTest extends TestCase
 
     public function test_can_create_and_retrieve_formato_pedido_plan(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
         $payload = $this->buildFormatoPedidoPayload(2026, $producto);
 
@@ -132,6 +140,7 @@ class FormatoPedidoApiTest extends TestCase
 
     public function test_update_replaces_existing_plan_without_duplicates(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
 
         $this->putJson('/api/v1/formato-pedido/2026', $this->buildFormatoPedidoPayload(2026, $producto))
@@ -181,6 +190,7 @@ class FormatoPedidoApiTest extends TestCase
 
     public function test_formato_pedido_and_consumo_anio_can_coexist_for_same_year(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
 
         $this->putJson('/api/v1/formato-pedido/2026', $this->buildFormatoPedidoPayload(2026, $producto))
@@ -221,6 +231,7 @@ class FormatoPedidoApiTest extends TestCase
 
     public function test_formato_pedido_does_not_modify_consumo_anio_plan(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
 
         $consumoPayload = [
@@ -252,6 +263,8 @@ class FormatoPedidoApiTest extends TestCase
 
     public function test_invalid_producto_id_is_rejected(): void
     {
+        $this->authenticate();
+
         $response = $this->putJson('/api/v1/formato-pedido/2026', [
             'anio' => 2026,
             'firma' => [
@@ -279,6 +292,7 @@ class FormatoPedidoApiTest extends TestCase
 
     public function test_duplicate_meses_are_rejected(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
 
         $response = $this->putJson('/api/v1/formato-pedido/2026', [
@@ -311,11 +325,22 @@ class FormatoPedidoApiTest extends TestCase
 
     public function test_mismatched_anio_in_body_is_rejected(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
 
         $response = $this->putJson('/api/v1/formato-pedido/2026', $this->buildFormatoPedidoPayload(2025, $producto));
 
         $response->assertUnprocessable();
+        $this->assertDatabaseCount('consumo_planes', 0);
+    }
+
+    public function test_update_requires_authentication(): void
+    {
+        $producto = $this->createProducto();
+
+        $this->putJson('/api/v1/formato-pedido/2026', $this->buildFormatoPedidoPayload(2026, $producto))
+            ->assertUnauthorized();
+
         $this->assertDatabaseCount('consumo_planes', 0);
     }
 }

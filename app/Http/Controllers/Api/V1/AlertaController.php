@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexAlertaRequest;
+use App\Http\Requests\UpdateAlertaRequest;
 use App\Http\Resources\AlertaResource;
 use App\Models\Alerta;
 use Illuminate\Http\JsonResponse;
@@ -40,6 +41,22 @@ class AlertaController extends Controller
                 'total' => $alertas->total(),
                 'per_page' => $alertas->perPage(),
             ],
+        ]);
+    }
+
+    public function update(UpdateAlertaRequest $request, Alerta $alerta): JsonResponse
+    {
+        $alerta->update([
+            'leida' => $request->boolean('leida'),
+        ]);
+
+        $alerta->load('producto');
+
+        return response()->json([
+            'data' => new AlertaResource($alerta),
+            'message' => $request->boolean('leida')
+                ? 'Alerta marcada como leída.'
+                : 'Alerta marcada como activa.',
         ]);
     }
 }

@@ -74,16 +74,18 @@ Route::prefix('v1')->group(function () {
             ->whereNumber('solicitud');
         Route::post('/semaforo/consumo/evaluar', [SemaforoConsumoController::class, 'evaluarAlerta']);
         Route::post('/precios-historicos', [PrecioHistoricoController::class, 'store']);
+        Route::patch('/alertas/{alerta}', [AlertaController::class, 'update'])
+            ->whereNumber('alerta');
+        Route::put('/consumo-anio/{anio}', [ConsumoAnioController::class, 'update'])
+            ->whereNumber('anio');
+        Route::put('/formato-pedido/{anio}', [FormatoPedidoController::class, 'update'])
+            ->whereNumber('anio');
     });
 
     Route::get('/consumo-anio/{anio}', [ConsumoAnioController::class, 'show'])
         ->whereNumber('anio');
-    Route::put('/consumo-anio/{anio}', [ConsumoAnioController::class, 'update'])
-        ->whereNumber('anio');
 
     Route::get('/formato-pedido/{anio}', [FormatoPedidoController::class, 'show'])
-        ->whereNumber('anio');
-    Route::put('/formato-pedido/{anio}', [FormatoPedidoController::class, 'update'])
         ->whereNumber('anio');
 
     // Staging: lectura pública; escritura requiere sesión Sanctum (Block 6.5).

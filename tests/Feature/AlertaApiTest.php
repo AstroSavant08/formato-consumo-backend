@@ -8,8 +8,10 @@ use App\Models\ExcelImportHomologacion;
 use App\Models\ExcelImportStaging;
 use App\Models\Inventario;
 use App\Models\Producto;
+use App\Models\User;
 use App\Support\TextNormalizer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class AlertaApiTest extends TestCase
@@ -191,5 +193,63 @@ class AlertaApiTest extends TestCase
         $this->assertSame(1, ExcelImportHomologacion::count());
         $this->assertSame('UND', ExcelImportStaging::query()->find($staging->id)->unidad_raw);
         $this->assertSame(0, Inventario::where('producto_id', $productoHistorico->id)->count());
+    }
+
+    public function test_patch_alerta_requires_authentication(): void
+    {
+        $producto = $this->createProducto();
+        $alerta = $this->createAlerta($producto, false);
+
+        $this->patchJson("/api/v1/alertas/{$alerta->id}", ['leida' => true])
+            ->assertUnauthorized();
+
+        $alerta->refresh();
+        $this->assertFalse($alerta->leida);
+    }
+
+    public function test_patch_alerta_marks_as_read(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $producto = $this->createProducto();
+        $alerta = $this->createAlerta($producto, false);
+
+        $this->patchJson("/api/v1/alertas/{$alerta->id}", ['leida' => true])
+            ->assertOk()
+            ->assertJsonPath('data.id', $alerta->id)
+            ->assertJsonPath('data.leida', true)
+            ->assertJsonPath('message', 'Alerta marcada como leída.');
+
+        $alerta->refresh();
+        $this->assertTrue($alerta->leida);
+    }
+
+    public function test_patch_alerta_can_mark_as_unread(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $producto = $this->createProducto();
+        $alerta = $this->createAlerta($producto, true);
+
+        $this->patchJson("/api/v1/alertas/{$alerta->id}", ['leida' => false])
+            ->assertOk()
+            ->assertJsonPath('data.leida', false);
+
+        $alerta->refresh();
+        $this->assertFalse($alerta->leida);
+    }
+
+    public function test_patch_alerta_validates_leida_field(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $producto = $this->createProducto();
+        $alerta = $this->createAlerta($producto, false);
+
+        $this->patchJson("/api/v1/alertas/{$alerta->id}", [])
+            ->assertStatus(422);
     }
 }

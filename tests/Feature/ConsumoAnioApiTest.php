@@ -4,12 +4,19 @@ namespace Tests\Feature;
 
 use App\Models\ConsumoPlan;
 use App\Models\Producto;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class ConsumoAnioApiTest extends TestCase
 {
     use RefreshDatabase;
+
+    private function authenticate(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+    }
 
     private function buildMeses(array $overrides = []): array
     {
@@ -49,6 +56,7 @@ class ConsumoAnioApiTest extends TestCase
 
     public function test_can_create_and_retrieve_consumo_anio_plan(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
 
         $payload = [
@@ -102,6 +110,7 @@ class ConsumoAnioApiTest extends TestCase
 
     public function test_update_replaces_existing_plan_without_duplicates(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
 
         $initialPayload = [
@@ -148,6 +157,7 @@ class ConsumoAnioApiTest extends TestCase
 
     public function test_invalid_payload_is_rejected_and_does_not_persist_partial_data(): void
     {
+        $this->authenticate();
         $producto = $this->createProducto();
 
         $response = $this->putJson('/api/v1/consumo-anio/2026', [
@@ -186,5 +196,25 @@ class ConsumoAnioApiTest extends TestCase
 
         $validResponse->assertOk();
         $this->assertSame(1, ConsumoPlan::query()->count());
+    }
+
+    public function test_update_requires_authentication(): void
+    {
+        $producto = $this->createProducto();
+
+        $this->putJson('/api/v1/consumo-anio/2026', [
+            'anio' => 2026,
+            'productos' => [
+                [
+                    'producto_id' => $producto->id,
+                    'nombre' => $producto->nombre,
+                    'stock_debido' => 10,
+                    'orden' => 1,
+                    'meses' => $this->buildMeses(),
+                ],
+            ],
+        ])->assertUnauthorized();
+
+        $this->assertDatabaseCount('consumo_planes', 0);
     }
 }
