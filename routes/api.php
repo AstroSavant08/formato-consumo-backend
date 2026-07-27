@@ -73,21 +73,22 @@ Route::prefix('v1')->group(function () {
     Route::put('/formato-pedido/{anio}', [FormatoPedidoController::class, 'update'])
         ->whereNumber('anio');
 
-    // Staging: lectura y operaciones administrativas del histórico Excel.
-    // RIESGO ACTUAL: estas rutas no tienen auth:sanctum ni login funcional en frontend;
-    // POST /{staging}/homologacion es público igual que import/validate/promote.
+    // Staging: lectura pública; escritura requiere sesión Sanctum (Block 6.5).
     Route::prefix('staging')->group(function () {
         Route::get('/summary', [StagingController::class, 'summary']);
         Route::get('/revision', [StagingController::class, 'revision']);
-        Route::post('/homologaciones/bulk', [StagingController::class, 'bulkHomologacion']);
-        Route::post('/validate-selected', [StagingController::class, 'validateSelected']);
-        Route::post('/promote-selected', [StagingController::class, 'promoteSelected']);
         Route::get('/aliases-pendientes', [StagingController::class, 'aliasesPendientes']);
         Route::get('/{staging}/homologacion', [StagingController::class, 'showHomologacion']);
-        Route::post('/{staging}/homologacion', [StagingController::class, 'storeHomologacion']);
         Route::get('/', [StagingController::class, 'index']);
-        Route::post('/import', [StagingController::class, 'import']);
-        Route::post('/validate', [StagingController::class, 'validateStaging']);
-        Route::post('/promote', [StagingController::class, 'promote']);
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/homologaciones/bulk', [StagingController::class, 'bulkHomologacion']);
+            Route::post('/validate-selected', [StagingController::class, 'validateSelected']);
+            Route::post('/promote-selected', [StagingController::class, 'promoteSelected']);
+            Route::post('/{staging}/homologacion', [StagingController::class, 'storeHomologacion']);
+            Route::post('/import', [StagingController::class, 'import']);
+            Route::post('/validate', [StagingController::class, 'validateStaging']);
+            Route::post('/promote', [StagingController::class, 'promote']);
+        });
     });
 });

@@ -230,4 +230,15 @@ class AuthApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.aprobado_por', $aprobador->id);
     }
+
+    public function test_staging_escritura_requiere_autenticacion(): void
+    {
+        $this->postJson('/api/v1/staging/validate-selected', ['staging_ids' => [1]])
+            ->assertUnauthorized();
+
+        $user = $this->createUser();
+        Sanctum::actingAs($user);
+        $this->postJson('/api/v1/staging/validate-selected', ['staging_ids' => []])
+            ->assertUnprocessable();
+    }
 }

@@ -125,13 +125,17 @@ entregas (fuente = excel_historico)
 - Escritura de solicitudes protegida con `auth:sanctum`.
 - `usuario_id` y `aprobado_por` se derivan del usuario autenticado en el servidor (no del body).
 
+### Block 6.5 — Auth en escritura staging
+
+- `GET /staging/*`: consulta pública (cola, resumen, homologación existente).
+- `POST /staging/*`: homologar, validar, promover e importar **requieren** `auth:sanctum`.
+
 ### Pendiente (no implementado aún)
 
-- UI frontend del módulo Solicitudes (Block 6.3+).
 - Semáforo por promedio histórico de consumo.
 - Precios históricos automáticos.
 - Panel dashboard global.
-- Protección auth en rutas de staging (riesgo documentado).
+- RBAC: solo supervisor/admin aprueba solicitudes.
 
 ---
 
@@ -220,9 +224,9 @@ Base URL: `http://127.0.0.1:8000/api/v1`
 | POST | `/staging/validate` | Validar todo el staging |
 | POST | `/staging/validate-selected` | Validar filas seleccionadas |
 | POST | `/staging/promote` | Promover validados |
-| POST | `/staging/promote-selected` | Promover seleccionados |
+| POST | `/staging/promote-selected` | Promover seleccionados (**Bearer**) |
 
-> Rutas staging **sin auth** actualmente — uso interno/dev.
+> Rutas `POST /staging/*` requieren token Sanctum. Los `GET` siguen siendo públicos.
 
 ---
 

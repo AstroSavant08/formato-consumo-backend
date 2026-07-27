@@ -423,6 +423,7 @@ class SolicitudInventarioTest extends TestCase
 
     public function test_promocion_historica_no_afecta_comprometido(): void
     {
+        $this->authenticateApiUser();
         $area = $this->createArea();
         $producto = $this->createProducto('Producto historico solicitud');
         $this->createInventario($producto, 100);

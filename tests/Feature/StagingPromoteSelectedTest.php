@@ -19,6 +19,12 @@ class StagingPromoteSelectedTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
     private ?Area $defaultArea = null;
 
     private function ensureArea(string $codigo = 'MANTENIMIENTO'): Area

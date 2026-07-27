@@ -18,6 +18,12 @@ class StagingHomologacionTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
     private function createArea(string $codigo = 'MANTENIMIENTO'): Area
     {
         return Area::query()->create([
