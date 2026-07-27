@@ -66,7 +66,7 @@ El seeder solo corre en entornos `local` y `testing`:
 C:\xampp\php\php.exe artisan test
 ```
 
-Suite actual: **234 tests** (inventario, entregas, staging, solicitudes, auth, unidades, semáforo, precios, Block 4).
+Suite actual: **237 tests** (inventario, entregas, staging, solicitudes, auth, unidades, semáforo, precios, Block 4).
 
 ---
 
@@ -156,9 +156,14 @@ entregas (fuente = excel_historico)
 - `POST /precios-historicos/vigentes` (batch por fecha)
 - `POST /precios-historicos` (auth) — registrar nuevo precio; cierra vigencias abiertas previas.
 
+### Block 9 — Panel operativo (dashboard)
+
+- `GET /dashboard/resumen?anio=&mes=` — alertas, solicitudes, inventario bajo mínimo, entregas por área, cola staging.
+
 ### Pendiente (no implementado aún)
 
-- Panel dashboard global.
+- Exportación completa ConsumoAnio.
+- Auth en PUT consumo-anio / formato-pedido.
 
 ---
 
@@ -216,6 +221,12 @@ Base URL: `http://127.0.0.1:8000/api/v1`
 | GET | `/precios-historicos` | No | Historial por producto (`?producto_id=`) |
 | POST | `/precios-historicos/vigentes` | No | Batch `{ producto_ids, fecha? }` |
 | POST | `/precios-historicos` | Bearer | Registrar precio con vigencia |
+
+### Panel operativo
+
+| Método | Endpoint | Auth | Descripción |
+|--------|----------|------|-------------|
+| GET | `/dashboard/resumen` | No | Resumen operativo (`?anio=&mes=`) |
 
 **GET `/semaforo/consumo`** — query: `producto_id`, `mes` (1–12), `anio`, `area_id` (opcional).
 

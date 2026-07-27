@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AreaController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CategoriaController;
 use App\Http\Controllers\Api\V1\ConsumoAnioController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\EntregaController;
 use App\Http\Controllers\Api\V1\FormatoPedidoController;
 use App\Http\Controllers\Api\V1\InventarioController;
@@ -22,6 +23,8 @@ Route::prefix('v1')->group(function () {
         'app' => config('app.name'),
         'time' => now()->toIso8601String(),
     ]));
+
+    Route::get('/dashboard/resumen', [DashboardController::class, 'resumen']);
 
     Route::prefix('auth')->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
