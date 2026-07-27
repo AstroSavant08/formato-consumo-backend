@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ExcelImportStaging extends Model
 {
@@ -48,5 +49,10 @@ class ExcelImportStaging extends Model
     public function entregas(): HasMany
     {
         return $this->hasMany(Entrega::class, 'staging_id');
+    }
+
+    public function homologacion(): HasOne
+    {
+        return $this->hasOne(ExcelImportHomologacion::class, 'staging_id');
     }
 }

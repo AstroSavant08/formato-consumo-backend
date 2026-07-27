@@ -45,6 +45,16 @@ class Producto extends Model
         return $this->hasOne(Inventario::class);
     }
 
+    public function movimientosInventario(): HasMany
+    {
+        return $this->hasMany(MovimientoInventario::class);
+    }
+
+    public function alertas(): HasMany
+    {
+        return $this->hasMany(Alerta::class);
+    }
+
     public function entregas(): HasMany
     {
         return $this->hasMany(Entrega::class);

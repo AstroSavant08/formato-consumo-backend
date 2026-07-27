@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\InventarioException;
+use App\Exceptions\SolicitudException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEntregaRequest;
 use App\Http\Resources\EntregaResource;
 use App\Models\Entrega;
+use App\Services\InventarioService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -60,19 +63,32 @@ class EntregaController extends Controller
         ]);
     }
 
-    public function store(StoreEntregaRequest $request): JsonResponse
+    public function store(StoreEntregaRequest $request, InventarioService $inventarioService): JsonResponse
     {
-        $entrega = Entrega::query()->create([
-            'fecha' => $request->validated('fecha'),
-            'producto_id' => $request->validated('producto_id'),
-            'area_id' => $request->validated('area_id'),
-            'cantidad' => $request->validated('cantidad'),
-            'unidad' => $request->validated('unidad'),
-            'quien_recibe' => $request->validated('quien_recibe'),
-            'entregado_por' => $request->validated('entregado_por'),
-            'fuente' => 'sistema',
-        ]);
+        try {
+            $resultado = $inventarioService->crearEntregaOperativa([
+                'fecha' => $request->validated('fecha'),
+                'producto_id' => $request->validated('producto_id'),
+                'area_id' => $request->validated('area_id'),
+                'cantidad' => $request->validated('cantidad'),
+                'unidad' => $request->validated('unidad'),
+                'quien_recibe' => $request->validated('quien_recibe'),
+                'entregado_por' => $request->validated('entregado_por'),
+                'solicitud_id' => $request->validated('solicitud_id'),
+            ]);
+        } catch (InventarioException $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'data' => $exception->data,
+            ], $exception->status);
+        } catch (SolicitudException $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'data' => $exception->data,
+            ], $exception->status);
+        }
 
+        $entrega = $resultado['entrega'];
         $entrega->load(['area', 'producto']);
 
         return response()->json([

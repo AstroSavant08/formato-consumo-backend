@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             CategoriaSeeder::class,
             RoleSeeder::class,
+            UserSeeder::class,
             ProductoSeeder::class,
             ProductoAliasSeeder::class,
             ConfiguracionAlertaSeeder::class,

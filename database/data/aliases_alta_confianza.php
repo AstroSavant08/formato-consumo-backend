@@ -20,4 +20,9 @@ return [
     'TOALLAS DE MANO' => ['producto' => 'Toallas de mano', 'confianza' => 1.0, 'revisado' => true],
     'VASOS DESECHABLES' => ['producto' => 'Vasos Desechables', 'confianza' => 1.0, 'revisado' => true],
     'VINAGRE' => ['producto' => 'Vinagre', 'confianza' => 1.0, 'revisado' => true],
+    'JABON LOZA LIQUIDO' => ['producto' => 'Jabon Lavaloza liquido', 'confianza' => 0.95, 'revisado' => true],
+    'FILTRO DE 2' => ['producto' => 'Filtros cafetera # 2', 'confianza' => 0.95, 'revisado' => true],
+    'FILTRO DE 8' => ['producto' => 'Filtros cafetera # 8', 'confianza' => 0.95, 'revisado' => true],
+    'SABRA' => ['producto' => 'Zabra - esponja para lavar losa', 'confianza' => 0.98, 'revisado' => true],
+    'ESCOBILLON' => ['producto' => 'Escobillon para baño', 'confianza' => 0.95, 'revisado' => true],
 ];

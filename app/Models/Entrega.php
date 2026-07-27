@@ -46,4 +46,9 @@ class Entrega extends Model
     {
         return $this->belongsTo(ExcelImportStaging::class, 'staging_id');
     }
+
+    public function solicitud(): BelongsTo
+    {
+        return $this->belongsTo(Solicitud::class);
+    }
 }

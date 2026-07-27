@@ -19,6 +19,7 @@ class EntregaResource extends JsonResource
             'quien_recibe' => $this->quien_recibe,
             'entregado_por' => $this->entregado_por,
             'fuente' => $this->fuente,
+            'solicitud_id' => $this->solicitud_id,
             'excel_fila' => $this->excel_fila,
             'es_posible_duplicado' => $this->es_posible_duplicado,
         ];

@@ -22,6 +22,7 @@ class StoreEntregaRequest extends FormRequest
             'quien_recibe' => ['required', 'string', 'max:255'],
             'entregado_por' => ['required', 'string', 'max:255'],
             'fuente' => ['prohibited'],
+            'solicitud_id' => ['nullable', 'integer', 'exists:solicitudes,id'],
         ];
     }
 }
