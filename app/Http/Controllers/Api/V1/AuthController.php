@@ -32,6 +32,8 @@ class AuthController extends Controller
 
         $token = $user->createToken('api')->plainTextToken;
 
+        $user->loadMissing('role');
+
         return response()->json([
             'token' => $token,
             'user' => new UserResource($user),
@@ -40,6 +42,8 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
+        $request->user()?->loadMissing('role');
+
         return response()->json([
             'data' => new UserResource($request->user()),
         ]);

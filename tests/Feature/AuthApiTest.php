@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Area;
 use App\Models\Inventario;
 use App\Models\Producto;
+use App\Models\Role;
 use App\Models\Solicitud;
 use App\Models\User;
 use App\Support\TextNormalizer;
@@ -173,7 +174,7 @@ class AuthApiTest extends TestCase
 
     public function test_solicitud_con_token_usa_auth_id(): void
     {
-        $user = $this->createUser();
+        $user = $this->createUserWithRole(Role::SOLICITANTE);
         $area = $this->createArea();
         $producto = $this->createProducto();
         Sanctum::actingAs($user);
@@ -188,8 +189,8 @@ class AuthApiTest extends TestCase
 
     public function test_usuario_id_en_body_no_puede_suplantar_al_autenticado(): void
     {
-        $authenticated = $this->createUser(['email' => 'real@impadoc.test']);
-        $other = $this->createUser(['email' => 'otro@impadoc.test']);
+        $authenticated = $this->createUserWithRole(Role::SOLICITANTE, ['email' => 'real@impadoc.test']);
+        $other = $this->createUserWithRole(Role::SOLICITANTE, ['email' => 'otro@impadoc.test']);
         $area = $this->createArea();
         $producto = $this->createProducto();
         Sanctum::actingAs($authenticated);
@@ -205,8 +206,8 @@ class AuthApiTest extends TestCase
 
     public function test_aprobar_registra_usuario_autenticado_como_aprobado_por(): void
     {
-        $solicitante = $this->createUser(['email' => 'solicitante@impadoc.test']);
-        $aprobador = $this->createUser(['email' => 'aprobador@impadoc.test']);
+        $solicitante = $this->createUserWithRole(Role::SOLICITANTE, ['email' => 'solicitante@impadoc.test']);
+        $aprobador = $this->createUserWithRole(Role::SUPERVISOR, ['email' => 'aprobador@impadoc.test']);
         $area = $this->createArea();
         $producto = $this->createProducto();
         $this->createInventario($producto);

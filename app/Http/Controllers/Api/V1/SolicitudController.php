@@ -63,6 +63,8 @@ class SolicitudController extends Controller
 
     public function store(StoreSolicitudRequest $request, SolicitudService $service): JsonResponse
     {
+        $this->authorize('create', Solicitud::class);
+
         try {
             $solicitud = $service->crear([
                 'area_id' => $request->integer('area_id'),
@@ -100,6 +102,8 @@ class SolicitudController extends Controller
             ], 404);
         }
 
+        $this->authorize('update', $model);
+
         try {
             $actualizada = $service->actualizar($model, $request->validated());
         } catch (SolicitudException $exception) {
@@ -134,6 +138,8 @@ class SolicitudController extends Controller
             ], 404);
         }
 
+        $this->authorize('aprobar', $model);
+
         try {
             $aprobada = $service->aprobar($model, (int) Auth::id());
         } catch (SolicitudException $exception) {
@@ -162,6 +168,8 @@ class SolicitudController extends Controller
             ], 404);
         }
 
+        $this->authorize('rechazar', $model);
+
         try {
             $rechazada = $service->rechazar($model, (int) Auth::id());
         } catch (SolicitudException $exception) {
@@ -184,6 +192,8 @@ class SolicitudController extends Controller
                 'data' => null,
             ], 404);
         }
+
+        $this->authorize('cancelar', $model);
 
         try {
             $cancelada = $service->cancelar($model);

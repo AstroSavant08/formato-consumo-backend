@@ -130,12 +130,18 @@ entregas (fuente = excel_historico)
 - `GET /staging/*`: consulta pública (cola, resumen, homologación existente).
 - `POST /staging/*`: homologar, validar, promover e importar **requieren** `auth:sanctum`.
 
+### Block 6.6 — RBAC solicitudes
+
+- **Crear / editar:** roles `solicitante`, `supervisor`, `admin`.
+- **Aprobar / rechazar / cancelar:** solo `supervisor` y `admin`.
+- `GET /auth/me` incluye objeto `role` (`id`, `nombre`, `descripcion`).
+
 ### Pendiente (no implementado aún)
 
 - Semáforo por promedio histórico de consumo.
 - Precios históricos automáticos.
 - Panel dashboard global.
-- RBAC: solo supervisor/admin aprueba solicitudes.
+- UI frontend: ocultar botones según rol.
 
 ---
 

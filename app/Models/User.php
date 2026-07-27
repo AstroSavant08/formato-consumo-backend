@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -12,6 +13,19 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
+    /** @var list<string> */
+    public const ROLES_MANAGE_SOLICITUDES = [
+        Role::SOLICITANTE,
+        Role::SUPERVISOR,
+        Role::ADMIN,
+    ];
+
+    /** @var list<string> */
+    public const ROLES_REVIEW_SOLICITUDES = [
+        Role::SUPERVISOR,
+        Role::ADMIN,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -49,5 +63,29 @@ class User extends Authenticatable
             'password' => 'hashed',
             'activo' => 'boolean',
         ];
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasRole(string ...$roles): bool
+    {
+        $nombre = $this->relationLoaded('role')
+            ? $this->role?->nombre
+            : $this->role()->value('nombre');
+
+        return $nombre !== null && in_array($nombre, $roles, true);
+    }
+
+    public function canManageSolicitudes(): bool
+    {
+        return $this->hasRole(...self::ROLES_MANAGE_SOLICITUDES);
+    }
+
+    public function canReviewSolicitudes(): bool
+    {
+        return $this->hasRole(...self::ROLES_REVIEW_SOLICITUDES);
     }
 }

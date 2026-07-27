@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class RoleResource extends JsonResource
 {
     /**
      * @return array<string, mixed>
@@ -14,11 +14,8 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'area_id' => $this->area_id,
-            'role_id' => $this->role_id,
-            'role' => $this->whenLoaded('role', fn () => new RoleResource($this->role)),
+            'nombre' => $this->nombre,
+            'descripcion' => $this->descripcion,
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Models\ExcelImportStaging;
 use App\Models\Inventario;
 use App\Models\MovimientoInventario;
 use App\Models\Producto;
+use App\Models\Role;
 use App\Models\Solicitud;
 use App\Models\User;
 use App\Services\StagingHomologacionService;
@@ -27,7 +28,7 @@ class SolicitudInventarioTest extends TestCase
 
     private function createUser(): User
     {
-        return User::factory()->create();
+        return $this->createUserWithRole(Role::SUPERVISOR);
     }
 
     private function createArea(string $codigo = 'MANTENIMIENTO'): Area
