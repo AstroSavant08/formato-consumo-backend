@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\FormatoPedidoController;
 use App\Http\Controllers\Api\V1\InventarioController;
 use App\Http\Controllers\Api\V1\MovimientoInventarioController;
 use App\Http\Controllers\Api\V1\ProductoController;
+use App\Http\Controllers\Api\V1\SemaforoConsumoController;
 use App\Http\Controllers\Api\V1\SolicitudController;
 use App\Http\Controllers\Api\V1\StagingController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,7 @@ Route::prefix('v1')->group(function () {
 
     Route::get('/movimientos-inventario', [MovimientoInventarioController::class, 'index']);
     Route::get('/alertas', [AlertaController::class, 'index']);
+    Route::get('/semaforo/consumo', [SemaforoConsumoController::class, 'show']);
     Route::get('/inventarios', [InventarioController::class, 'index']);
     Route::get('/inventarios/{producto}', [InventarioController::class, 'show'])
         ->whereNumber('producto');
@@ -62,6 +64,7 @@ Route::prefix('v1')->group(function () {
             ->whereNumber('solicitud');
         Route::post('/solicitudes/{solicitud}/cancelar', [SolicitudController::class, 'cancelar'])
             ->whereNumber('solicitud');
+        Route::post('/semaforo/consumo/evaluar', [SemaforoConsumoController::class, 'evaluarAlerta']);
     });
 
     Route::get('/consumo-anio/{anio}', [ConsumoAnioController::class, 'show'])

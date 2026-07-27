@@ -16,7 +16,7 @@ class IndexAlertaRequest extends FormRequest
     {
         return [
             'producto_id' => ['nullable', 'integer', 'exists:productos,id'],
-            'tipo' => ['nullable', 'string', Rule::in(['stock_minimo'])],
+            'tipo' => ['nullable', 'string', Rule::in(['stock_minimo', 'consumo_variacion'])],
             'leida' => ['nullable', 'boolean'],
         ];
     }

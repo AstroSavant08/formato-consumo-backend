@@ -182,17 +182,40 @@ Base URL: `http://127.0.0.1:8000/api/v1`
 | GET | `/entregas` | Listado (filtros: fuente, area_id, fechas) |
 | POST | `/entregas` | Entrega operativa (`solicitud_id` opcional) |
 
-### Inventario y alertas
+### Inventario, alertas y semáforo de consumo
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/inventarios` | Listado de inventarios |
-| GET | `/inventarios/{producto}` | Inventario de un producto |
-| POST | `/inventarios/{producto}/inicial` | Crear inventario inicial |
-| POST | `/inventarios/{producto}/entrada` | Registrar entrada |
-| POST | `/inventarios/{producto}/ajuste` | Registrar ajuste |
-| GET | `/movimientos-inventario` | Historial de movimientos |
-| GET | `/alertas` | Alertas de inventario |
+| Método | Endpoint | Auth | Descripción |
+|--------|----------|------|-------------|
+| GET | `/inventarios` | No | Listado de inventarios |
+| GET | `/inventarios/{producto}` | No | Inventario de un producto |
+| POST | `/inventarios/{producto}/inicial` | Bearer | Crear inventario inicial |
+| POST | `/inventarios/{producto}/entrada` | Bearer | Registrar entrada |
+| POST | `/inventarios/{producto}/ajuste` | Bearer | Registrar ajuste |
+| GET | `/movimientos-inventario` | No | Historial de movimientos |
+| GET | `/alertas` | No | Alertas (`?tipo=stock_minimo\|consumo_variacion`) |
+| GET | `/semaforo/consumo` | No | Semáforo consumo vs promedio histórico |
+| POST | `/semaforo/consumo/evaluar` | Bearer | Evalúa y persiste alerta si amarillo/rojo |
+
+**GET `/semaforo/consumo`** — query: `producto_id`, `mes` (1–12), `anio`, `area_id` (opcional).
+
+Compara el consumo del mes evaluado con el promedio del mismo mes en años anteriores (entregas `excel_historico` + `sistema`). Umbrales en `configuracion_alertas.clave = consumo_variacion_porcentual` (verde ≤15%, amarillo ≤40%, rojo >40% en exceso).
+
+Respuesta ejemplo:
+
+```json
+{
+  "data": {
+    "producto_id": 1,
+    "mes": 7,
+    "anio": 2026,
+    "consumo_actual": 150,
+    "promedio_historico": 100,
+    "variacion_porcentual": 50,
+    "severidad": "rojo",
+    "mensaje": "Consumo excesivo..."
+  }
+}
+```
 
 ### Solicitudes
 
