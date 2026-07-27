@@ -59,4 +59,9 @@ class Producto extends Model
     {
         return $this->hasMany(Entrega::class);
     }
+
+    public function preciosHistoricos(): HasMany
+    {
+        return $this->hasMany(PrecioHistorico::class);
+    }
 }

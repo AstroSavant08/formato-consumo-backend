@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\EntregaController;
 use App\Http\Controllers\Api\V1\FormatoPedidoController;
 use App\Http\Controllers\Api\V1\InventarioController;
 use App\Http\Controllers\Api\V1\MovimientoInventarioController;
+use App\Http\Controllers\Api\V1\PrecioHistoricoController;
 use App\Http\Controllers\Api\V1\ProductoController;
 use App\Http\Controllers\Api\V1\SemaforoConsumoController;
 use App\Http\Controllers\Api\V1\SolicitudController;
@@ -33,6 +34,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/areas', [AreaController::class, 'index']);
     Route::get('/categorias', [CategoriaController::class, 'index']);
     Route::get('/productos', [ProductoController::class, 'index']);
+    Route::get('/productos/{producto}/precio-vigente', [PrecioHistoricoController::class, 'showVigente'])
+        ->whereNumber('producto');
+    Route::get('/precios-historicos', [PrecioHistoricoController::class, 'index']);
+    Route::post('/precios-historicos/vigentes', [PrecioHistoricoController::class, 'resolverVigentes']);
     Route::get('/entregas', [EntregaController::class, 'index']);
 
     Route::get('/movimientos-inventario', [MovimientoInventarioController::class, 'index']);
@@ -65,6 +70,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/solicitudes/{solicitud}/cancelar', [SolicitudController::class, 'cancelar'])
             ->whereNumber('solicitud');
         Route::post('/semaforo/consumo/evaluar', [SemaforoConsumoController::class, 'evaluarAlerta']);
+        Route::post('/precios-historicos', [PrecioHistoricoController::class, 'store']);
     });
 
     Route::get('/consumo-anio/{anio}', [ConsumoAnioController::class, 'show'])

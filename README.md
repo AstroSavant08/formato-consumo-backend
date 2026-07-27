@@ -66,7 +66,7 @@ El seeder solo corre en entornos `local` y `testing`:
 C:\xampp\php\php.exe artisan test
 ```
 
-Suite actual: **206 tests** (inventario, entregas, staging, solicitudes, auth, unidades, Block 4).
+Suite actual: **234 tests** (inventario, entregas, staging, solicitudes, auth, unidades, semáforo, precios, Block 4).
 
 ---
 
@@ -142,10 +142,22 @@ entregas (fuente = excel_historico)
 - `POST /inventarios/{producto}/inicial|entrada|ajuste` requiere `auth:sanctum`.
 - Consultas (`GET`) siguen públicas.
 
+### Block 7 — Semáforo de consumo vs promedio histórico
+
+- `PromedioHistoricoService`, `SemaforoConsumoService`, `AlertaConsumoService`.
+- `GET /semaforo/consumo`, `POST /semaforo/consumo/evaluar`.
+- Alertas tipo `consumo_variacion`.
+
+### Block 8 — Precios históricos
+
+- Tabla `precios_historicos` con vigencia (`vigente_desde`, `vigente_hasta`).
+- `GET /productos/{producto}/precio-vigente?fecha=`
+- `GET /precios-historicos?producto_id=`
+- `POST /precios-historicos/vigentes` (batch por fecha)
+- `POST /precios-historicos` (auth) — registrar nuevo precio; cierra vigencias abiertas previas.
+
 ### Pendiente (no implementado aún)
 
-- Semáforo por promedio histórico de consumo.
-- Precios históricos automáticos.
 - Panel dashboard global.
 
 ---
@@ -195,6 +207,15 @@ Base URL: `http://127.0.0.1:8000/api/v1`
 | GET | `/alertas` | No | Alertas (`?tipo=stock_minimo\|consumo_variacion`) |
 | GET | `/semaforo/consumo` | No | Semáforo consumo vs promedio histórico |
 | POST | `/semaforo/consumo/evaluar` | Bearer | Evalúa y persiste alerta si amarillo/rojo |
+
+### Precios históricos
+
+| Método | Endpoint | Auth | Descripción |
+|--------|----------|------|-------------|
+| GET | `/productos/{producto}/precio-vigente` | No | Precio vigente (`?fecha=YYYY-MM-DD`) |
+| GET | `/precios-historicos` | No | Historial por producto (`?producto_id=`) |
+| POST | `/precios-historicos/vigentes` | No | Batch `{ producto_ids, fecha? }` |
+| POST | `/precios-historicos` | Bearer | Registrar precio con vigencia |
 
 **GET `/semaforo/consumo`** — query: `producto_id`, `mes` (1–12), `anio`, `area_id` (opcional).
 
