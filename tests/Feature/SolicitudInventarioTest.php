@@ -21,6 +21,12 @@ class SolicitudInventarioTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
     private function actingAsUser(User $user): void
     {
         Sanctum::actingAs($user);

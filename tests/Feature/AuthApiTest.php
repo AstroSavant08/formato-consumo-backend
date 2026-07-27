@@ -242,4 +242,30 @@ class AuthApiTest extends TestCase
         $this->postJson('/api/v1/staging/validate-selected', ['staging_ids' => []])
             ->assertUnprocessable();
     }
+
+    public function test_entrega_escritura_requiere_autenticacion(): void
+    {
+        $area = $this->createArea();
+        $producto = $this->createProducto();
+        $this->createInventario($producto);
+
+        $this->postJson('/api/v1/entregas', [
+            'fecha' => '2026-07-27',
+            'producto_id' => $producto->id,
+            'area_id' => $area->id,
+            'cantidad' => 1,
+            'unidad' => 'UND',
+            'quien_recibe' => 'Receptor',
+            'entregado_por' => 'Entregador',
+        ])->assertUnauthorized();
+    }
+
+    public function test_inventario_escritura_requiere_autenticacion(): void
+    {
+        $producto = $this->createProducto();
+
+        $this->postJson("/api/v1/inventarios/{$producto->id}/inicial", [
+            'stock_inicial' => 10,
+        ])->assertUnauthorized();
+    }
 }

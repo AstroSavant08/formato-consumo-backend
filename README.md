@@ -136,12 +136,17 @@ entregas (fuente = excel_historico)
 - **Aprobar / rechazar / cancelar:** solo `supervisor` y `admin`.
 - `GET /auth/me` incluye objeto `role` (`id`, `nombre`, `descripcion`).
 
+### Block 6.7 — Auth en escritura operativa
+
+- `POST /entregas` requiere `auth:sanctum`.
+- `POST /inventarios/{producto}/inicial|entrada|ajuste` requiere `auth:sanctum`.
+- Consultas (`GET`) siguen públicas.
+
 ### Pendiente (no implementado aún)
 
 - Semáforo por promedio histórico de consumo.
 - Precios históricos automáticos.
 - Panel dashboard global.
-- UI frontend: ocultar botones según rol.
 
 ---
 

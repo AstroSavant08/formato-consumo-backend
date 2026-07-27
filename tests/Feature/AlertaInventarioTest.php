@@ -21,6 +21,12 @@ class AlertaInventarioTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
     private function createProducto(
         string $nombre = 'Producto alerta test',
         ?string $unidadDefault = 'UND',

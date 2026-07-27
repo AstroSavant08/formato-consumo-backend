@@ -33,17 +33,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/categorias', [CategoriaController::class, 'index']);
     Route::get('/productos', [ProductoController::class, 'index']);
     Route::get('/entregas', [EntregaController::class, 'index']);
-    Route::post('/entregas', [EntregaController::class, 'store']);
 
     Route::get('/movimientos-inventario', [MovimientoInventarioController::class, 'index']);
     Route::get('/alertas', [AlertaController::class, 'index']);
     Route::get('/inventarios', [InventarioController::class, 'index']);
-    Route::post('/inventarios/{producto}/inicial', [InventarioController::class, 'storeInicial'])
-        ->whereNumber('producto');
-    Route::post('/inventarios/{producto}/entrada', [InventarioController::class, 'registrarEntrada'])
-        ->whereNumber('producto');
-    Route::post('/inventarios/{producto}/ajuste', [InventarioController::class, 'registrarAjuste'])
-        ->whereNumber('producto');
     Route::get('/inventarios/{producto}', [InventarioController::class, 'show'])
         ->whereNumber('producto');
 
@@ -52,6 +45,14 @@ Route::prefix('v1')->group(function () {
         ->whereNumber('solicitud');
 
     Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/entregas', [EntregaController::class, 'store']);
+        Route::post('/inventarios/{producto}/inicial', [InventarioController::class, 'storeInicial'])
+            ->whereNumber('producto');
+        Route::post('/inventarios/{producto}/entrada', [InventarioController::class, 'registrarEntrada'])
+            ->whereNumber('producto');
+        Route::post('/inventarios/{producto}/ajuste', [InventarioController::class, 'registrarAjuste'])
+            ->whereNumber('producto');
+
         Route::post('/solicitudes', [SolicitudController::class, 'store']);
         Route::patch('/solicitudes/{solicitud}', [SolicitudController::class, 'update'])
             ->whereNumber('solicitud');

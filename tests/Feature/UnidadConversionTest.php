@@ -36,6 +36,12 @@ class UnidadConversionTest extends TestCase
 
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
 
 
     private function createProducto(string $nombre, ?string $unidadDefault): Producto

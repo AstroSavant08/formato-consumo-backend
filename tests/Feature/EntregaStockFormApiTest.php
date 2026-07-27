@@ -18,6 +18,12 @@ class EntregaStockFormApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
     private function createProducto(
         string $nombre = 'Producto formulario entregas',
         ?string $unidadDefault = 'UND',

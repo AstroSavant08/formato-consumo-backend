@@ -18,6 +18,12 @@ class InventarioApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
     private function createProducto(string $nombre = 'Producto inventario api'): Producto
     {
         return Producto::query()->create([

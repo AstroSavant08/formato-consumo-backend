@@ -17,6 +17,12 @@ class UnidadValidacionTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
     private function createProducto(
         string $nombre = 'Producto unidad test',
         ?string $unidadDefault = 'UND',

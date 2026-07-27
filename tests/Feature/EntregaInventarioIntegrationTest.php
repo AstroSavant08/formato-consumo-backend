@@ -17,6 +17,12 @@ class EntregaInventarioIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->authenticateApiUser();
+    }
+
     private function createProducto(string $nombre = 'Producto entrega operativa'): Producto
     {
         return Producto::query()->create([
