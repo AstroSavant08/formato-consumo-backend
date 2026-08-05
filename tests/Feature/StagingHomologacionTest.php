@@ -724,6 +724,43 @@ class StagingHomologacionTest extends TestCase
             ->assertJsonPath('data', null);
     }
 
+    public function test_bulk_homologacion_accepts_more_than_100_staging_ids(): void
+    {
+        $this->createArea();
+        $productoDestino = $this->createProductoOperativo();
+        $stagingIds = [];
+
+        for ($index = 1; $index <= 101; $index++) {
+            $stagingIds[] = $this->createStaging([
+                'fila_excel' => 2000 + $index,
+                'excel_hash' => hash('sha256', "bulk-limit-101-{$index}"),
+            ])->id;
+        }
+
+        $response = $this->postJson('/api/v1/staging/homologaciones/bulk', [
+            'staging_ids' => $stagingIds,
+            'producto_id_destino' => $productoDestino->id,
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('meta.homologados', 101)
+            ->assertJsonPath('meta.omitidos', 0)
+            ->assertJsonPath('meta.errores', 0);
+    }
+
+    public function test_bulk_homologacion_rejects_more_than_500_staging_ids(): void
+    {
+        $productoDestino = $this->createProductoOperativo();
+
+        $response = $this->postJson('/api/v1/staging/homologaciones/bulk', [
+            'staging_ids' => range(1, 501),
+            'producto_id_destino' => $productoDestino->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('data', null);
+    }
+
     public function test_individual_homologacion_remains_unaffected(): void
     {
         $this->createArea();
