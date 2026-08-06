@@ -13,9 +13,11 @@ class ConsumoAnioApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $autoAuthenticateApi = false;
+
     private function authenticate(): void
     {
-        Sanctum::actingAs(User::factory()->create());
+        Sanctum::actingAs($this->createUserWithRole(\App\Models\Role::SUPERVISOR));
     }
 
     private function buildMeses(array $overrides = []): array
@@ -45,6 +47,7 @@ class ConsumoAnioApiTest extends TestCase
 
     public function test_show_returns_404_when_plan_does_not_exist(): void
     {
+        $this->authenticate();
         $response = $this->getJson('/api/v1/consumo-anio/2026');
 
         $response->assertNotFound()

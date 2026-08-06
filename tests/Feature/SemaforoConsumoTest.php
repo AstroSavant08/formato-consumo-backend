@@ -187,6 +187,7 @@ class SemaforoConsumoTest extends TestCase
 
     public function test_post_evaluar_requiere_autenticacion(): void
     {
+        $this->clearAuthentication();
         $producto = $this->createProducto();
 
         $this->postJson("/api/v1/semaforo/consumo/evaluar?producto_id={$producto->id}&mes=7&anio=2026")

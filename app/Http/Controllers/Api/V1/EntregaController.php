@@ -74,6 +74,9 @@ class EntregaController extends Controller
                 'unidad' => $request->validated('unidad'),
                 'quien_recibe' => $request->validated('quien_recibe'),
                 'entregado_por' => $request->validated('entregado_por'),
+                'quien_retira_cedula' => $request->validated('quien_retira_cedula'),
+                'quien_retira_nombre' => $request->validated('quien_retira_nombre'),
+                'registrado_por_user_id' => $request->user()?->id,
                 'solicitud_id' => $request->validated('solicitud_id'),
             ]);
         } catch (InventarioException $exception) {

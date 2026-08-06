@@ -107,7 +107,7 @@ class SolicitudInventarioTest extends TestCase
             $payload['solicitud_id'] = $solicitudId;
         }
 
-        return $payload;
+        return $this->withEntregaPersona($payload);
     }
 
     private function crearSolicitudEnRevision(User $user, Area $area, Producto $producto, float $cantidad = 10, string $unidad = 'UND'): int

@@ -7,6 +7,8 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    protected bool $autoAuthenticateApi = false;
+
     /**
      * A basic test example.
      */

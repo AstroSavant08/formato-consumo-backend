@@ -10,12 +10,45 @@ use Laravel\Sanctum\Sanctum;
 
 abstract class TestCase extends BaseTestCase
 {
+    protected bool $autoAuthenticateApi = true;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if ($this->autoAuthenticateApi) {
+            $this->authenticateApiUser();
+        }
+    }
+
     protected function authenticateApiUser(array $overrides = []): User
     {
-        $user = User::factory()->create($overrides);
+        $this->seedRoles();
+        $supervisorRole = Role::query()->where('nombre', Role::SUPERVISOR)->firstOrFail();
+
+        $user = User::factory()->create(array_merge([
+            'role_id' => $supervisorRole->id,
+        ], $overrides));
         Sanctum::actingAs($user);
 
         return $user;
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    protected function withEntregaPersona(array $payload): array
+    {
+        return array_merge([
+            'quien_retira_cedula' => '1107085013',
+            'quien_retira_nombre' => 'MONTENEGRO VARA YOINER ALEXIS',
+        ], $payload);
+    }
+
+    protected function clearAuthentication(): void
+    {
+        auth('sanctum')->forgetUser();
     }
 
     protected function seedRoles(): void

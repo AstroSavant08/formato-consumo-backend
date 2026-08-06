@@ -15,6 +15,10 @@ class Entrega extends Model
         'unidad',
         'quien_recibe',
         'entregado_por',
+        'quien_retira_cedula',
+        'quien_retira_nombre',
+        'persona_retira_id',
+        'registrado_por_user_id',
         'fuente',
         'excel_fila',
         'excel_hash',
@@ -50,5 +54,15 @@ class Entrega extends Model
     public function solicitud(): BelongsTo
     {
         return $this->belongsTo(Solicitud::class);
+    }
+
+    public function personaRetira(): BelongsTo
+    {
+        return $this->belongsTo(Persona::class, 'persona_retira_id');
+    }
+
+    public function registradoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'registrado_por_user_id');
     }
 }

@@ -17,6 +17,8 @@ class SolicitudRbacTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $autoAuthenticateApi = false;
+
     private function createArea(): Area
     {
         return Area::query()->create([
@@ -102,7 +104,7 @@ class SolicitudRbacTest extends TestCase
 
         $this->postJson('/api/v1/solicitudes', $this->solicitudPayload($area, $producto))
             ->assertForbidden()
-            ->assertJsonPath('message', 'No tiene permiso para crear solicitudes.');
+            ->assertJsonPath('message', 'No tiene permiso para esta acción.');
     }
 
     public function test_solicitante_no_puede_aprobar_solicitud(): void
@@ -117,7 +119,7 @@ class SolicitudRbacTest extends TestCase
         Sanctum::actingAs($solicitante);
         $this->postJson("/api/v1/solicitudes/{$solicitudId}/aprobar")
             ->assertForbidden()
-            ->assertJsonPath('message', 'No tiene permiso para aprobar solicitudes.');
+            ->assertJsonPath('message', 'No tiene permiso para esta acción.');
     }
 
     public function test_supervisor_puede_aprobar_solicitud(): void

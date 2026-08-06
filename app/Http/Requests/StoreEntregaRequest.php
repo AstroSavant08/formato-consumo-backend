@@ -8,7 +8,7 @@ class StoreEntregaRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->canRegisterEntregas() ?? false;
     }
 
     public function rules(): array
@@ -21,6 +21,8 @@ class StoreEntregaRequest extends FormRequest
             'unidad' => ['required', 'string', 'max:20'],
             'quien_recibe' => ['required', 'string', 'max:255'],
             'entregado_por' => ['required', 'string', 'max:255'],
+            'quien_retira_cedula' => ['required', 'string', 'max:20'],
+            'quien_retira_nombre' => ['required', 'string', 'max:255'],
             'fuente' => ['prohibited'],
             'solicitud_id' => ['nullable', 'integer', 'exists:solicitudes,id'],
         ];

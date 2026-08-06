@@ -69,6 +69,7 @@ class PrecioHistoricoApiTest extends TestCase
 
     public function test_post_precio_historico_requires_auth(): void
     {
+        $this->clearAuthentication();
         $producto = $this->createProducto();
 
         $this->postJson('/api/v1/precios-historicos', [

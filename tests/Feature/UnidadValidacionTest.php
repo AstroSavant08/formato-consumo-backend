@@ -59,7 +59,7 @@ class UnidadValidacionTest extends TestCase
 
     private function entregaPayload(Producto $producto, Area $area, string $unidad, float $cantidad = 5): array
     {
-        return [
+        return $this->withEntregaPersona([
             'fecha' => '2026-07-24',
             'producto_id' => $producto->id,
             'area_id' => $area->id,
@@ -67,7 +67,7 @@ class UnidadValidacionTest extends TestCase
             'unidad' => $unidad,
             'quien_recibe' => 'Receptor unidad test',
             'entregado_por' => 'Entregador unidad test',
-        ];
+        ]);
     }
 
     public function test_entrada_acepta_coincidencia_exacta_de_unidad(): void

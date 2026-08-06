@@ -62,7 +62,7 @@ class EntregaInventarioIntegrationTest extends TestCase
 
     private function entregaPayload(Producto $producto, Area $area, float $cantidad = 20): array
     {
-        return [
+        return $this->withEntregaPersona([
             'fecha' => '2026-07-21',
             'producto_id' => $producto->id,
             'area_id' => $area->id,
@@ -70,7 +70,7 @@ class EntregaInventarioIntegrationTest extends TestCase
             'unidad' => 'UND',
             'quien_recibe' => 'Receptor operativo',
             'entregado_por' => 'Entregador operativo',
-        ];
+        ]);
     }
 
     public function test_entrega_operativa_con_stock_suficiente_descuenta_inventario(): void

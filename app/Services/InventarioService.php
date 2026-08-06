@@ -252,6 +252,9 @@ class InventarioService
      *     unidad: string,
      *     quien_recibe: string,
      *     entregado_por: string,
+     *     quien_retira_cedula: string,
+     *     quien_retira_nombre: string,
+     *     registrado_por_user_id?: int|null,
      *     solicitud_id?: int|null
      * }  $datos
      * @return array{entrega: Entrega, movimiento: MovimientoInventario, solicitud?: \App\Models\Solicitud|null}
@@ -269,6 +272,12 @@ class InventarioService
             throw new InventarioException('Producto no encontrado.', 404);
         }
 
+        $personaService = app(PersonaService::class);
+        $personaRetira = $personaService->resolverParaEntrega(
+            $datos['quien_retira_cedula'],
+            $datos['quien_retira_nombre'],
+        );
+
         $cantidadBase = $this->unidadConversionService->resolverCantidadEnUnidadBase(
             $producto,
             $cantidadOriginal,
@@ -278,7 +287,7 @@ class InventarioService
         $solicitudId = $datos['solicitud_id'] ?? null;
         $solicitudService ??= app(SolicitudService::class);
 
-        return DB::transaction(function () use ($datos, $cantidadOriginal, $cantidadBase, $solicitudId, $solicitudService, $producto) {
+        return DB::transaction(function () use ($datos, $cantidadOriginal, $cantidadBase, $solicitudId, $solicitudService, $producto, $personaRetira) {
             $inventario = Inventario::query()
                 ->where('producto_id', $datos['producto_id'])
                 ->lockForUpdate()
@@ -360,6 +369,10 @@ class InventarioService
                 'unidad' => $datos['unidad'],
                 'quien_recibe' => $datos['quien_recibe'],
                 'entregado_por' => $datos['entregado_por'],
+                'quien_retira_cedula' => $personaRetira->cedula,
+                'quien_retira_nombre' => $personaRetira->nombre_completo,
+                'persona_retira_id' => $personaRetira->id,
+                'registrado_por_user_id' => $datos['registrado_por_user_id'] ?? null,
                 'fuente' => 'sistema',
                 'solicitud_id' => $solicitudId,
             ]);
@@ -372,7 +385,7 @@ class InventarioService
                 'stock_posterior' => $stockPosterior,
                 'referencia_tipo' => 'Entrega',
                 'referencia_id' => $entrega->id,
-                'usuario_id' => null,
+                'usuario_id' => $datos['registrado_por_user_id'] ?? null,
                 'observaciones' => null,
             ]);
 

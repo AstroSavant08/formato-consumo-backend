@@ -109,27 +109,16 @@ class UnidadConversionTest extends TestCase
 
 
     private function entregaPayload(Producto $producto, Area $area, string $unidad, float $cantidad): array
-
     {
-
-        return [
-
+        return $this->withEntregaPersona([
             'fecha' => '2026-07-24',
-
             'producto_id' => $producto->id,
-
             'area_id' => $area->id,
-
             'cantidad' => $cantidad,
-
             'unidad' => $unidad,
-
             'quien_recibe' => 'Receptor conversion test',
-
             'entregado_por' => 'Entregador conversion test',
-
-        ];
-
+        ]);
     }
 
 

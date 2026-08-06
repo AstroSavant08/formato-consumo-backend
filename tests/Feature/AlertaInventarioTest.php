@@ -68,7 +68,7 @@ class AlertaInventarioTest extends TestCase
 
     private function entregaPayload(Producto $producto, Area $area, float $cantidad): array
     {
-        return [
+        return $this->withEntregaPersona([
             'fecha' => '2026-07-24',
             'producto_id' => $producto->id,
             'area_id' => $area->id,
@@ -76,7 +76,7 @@ class AlertaInventarioTest extends TestCase
             'unidad' => 'UND',
             'quien_recibe' => 'Receptor alerta test',
             'entregado_por' => 'Entregador alerta test',
-        ];
+        ]);
     }
 
     public function test_no_crea_alerta_cuando_stock_disponible_esta_por_encima_del_minimo(): void

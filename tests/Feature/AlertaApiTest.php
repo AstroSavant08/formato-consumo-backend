@@ -197,6 +197,7 @@ class AlertaApiTest extends TestCase
 
     public function test_patch_alerta_requires_authentication(): void
     {
+        $this->clearAuthentication();
         $producto = $this->createProducto();
         $alerta = $this->createAlerta($producto, false);
 
@@ -209,7 +210,7 @@ class AlertaApiTest extends TestCase
 
     public function test_patch_alerta_marks_as_read(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRole(\App\Models\Role::SUPERVISOR);
         Sanctum::actingAs($user);
 
         $producto = $this->createProducto();
@@ -227,7 +228,7 @@ class AlertaApiTest extends TestCase
 
     public function test_patch_alerta_can_mark_as_unread(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRole(\App\Models\Role::SUPERVISOR);
         Sanctum::actingAs($user);
 
         $producto = $this->createProducto();
@@ -243,7 +244,7 @@ class AlertaApiTest extends TestCase
 
     public function test_patch_alerta_validates_leida_field(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRole(\App\Models\Role::SUPERVISOR);
         Sanctum::actingAs($user);
 
         $producto = $this->createProducto();

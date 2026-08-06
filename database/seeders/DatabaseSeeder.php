@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             ProductoSeeder::class,
             ProductoAliasSeeder::class,
             ConfiguracionAlertaSeeder::class,
+            PersonaSeeder::class,
         ]);
     }
 }

@@ -22,6 +22,19 @@ class User extends Authenticatable
     ];
 
     /** @var list<string> */
+    public const ROLES_FULL_ACCESS = [
+        Role::ADMIN,
+        Role::SUPERVISOR,
+    ];
+
+    /** @var list<string> */
+    public const ROLES_ENTREGAS = [
+        Role::ADMIN,
+        Role::SUPERVISOR,
+        Role::ALMACEN,
+    ];
+
+    /** @var list<string> */
     public const ROLES_REVIEW_SOLICITUDES = [
         Role::SUPERVISOR,
         Role::ADMIN,
@@ -87,5 +100,15 @@ class User extends Authenticatable
     public function canReviewSolicitudes(): bool
     {
         return $this->hasRole(...self::ROLES_REVIEW_SOLICITUDES);
+    }
+
+    public function canAccessFullApp(): bool
+    {
+        return $this->hasRole(...self::ROLES_FULL_ACCESS);
+    }
+
+    public function canRegisterEntregas(): bool
+    {
+        return $this->hasRole(...self::ROLES_ENTREGAS);
     }
 }

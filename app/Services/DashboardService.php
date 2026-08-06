@@ -218,6 +218,7 @@ class DashboardService
 
         return [
             'staging_total' => array_sum($conteos),
+            'requiere_revision' => (int) ($conteos['requiere_revision'] ?? 0),
             'por_estado' => $conteos,
         ];
     }

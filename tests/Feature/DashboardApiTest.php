@@ -52,7 +52,7 @@ class DashboardApiTest extends TestCase
                     'solicitudes' => ['total', 'pendientes_accion', 'por_estado', 'recientes'],
                     'inventario' => ['total_configurados', 'bajo_minimo_total', 'bajo_minimo'],
                     'entregas' => ['mes_total', 'por_fuente', 'por_area'],
-                    'homologacion' => ['staging_total', 'por_estado'],
+                    'homologacion' => ['staging_total', 'requiere_revision', 'por_estado'],
                     'generado_at',
                 ],
             ]);
@@ -107,7 +107,17 @@ class DashboardApiTest extends TestCase
             'producto_raw' => 'Producto raw',
             'area_raw' => 'Area raw',
             'cantidad_raw' => '1',
-            'estado' => 'pendiente',
+            'estado' => 'requiere_revision',
+        ]);
+
+        ExcelImportStaging::query()->create([
+            'excel_hash' => 'hash-dashboard-2',
+            'fila_excel' => 11,
+            'fecha_raw' => '2026-07-02',
+            'producto_raw' => 'Producto importado',
+            'area_raw' => 'Area raw',
+            'cantidad_raw' => '2',
+            'estado' => 'importado',
         ]);
 
         $this->getJson('/api/v1/dashboard/resumen?anio=2026&mes=7')
@@ -116,7 +126,8 @@ class DashboardApiTest extends TestCase
             ->assertJsonPath('data.solicitudes.pendientes_accion', 1)
             ->assertJsonPath('data.inventario.bajo_minimo_total', 1)
             ->assertJsonPath('data.entregas.mes_total', 1)
-            ->assertJsonPath('data.homologacion.staging_total', 1);
+            ->assertJsonPath('data.homologacion.staging_total', 2)
+            ->assertJsonPath('data.homologacion.requiere_revision', 1);
     }
 
     public function test_get_dashboard_resumen_validates_mes(): void

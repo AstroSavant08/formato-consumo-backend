@@ -18,6 +18,8 @@ class AuthApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $autoAuthenticateApi = false;
+
     private function createUser(array $overrides = []): User
     {
         return User::factory()->create($overrides);
@@ -237,7 +239,7 @@ class AuthApiTest extends TestCase
         $this->postJson('/api/v1/staging/validate-selected', ['staging_ids' => [1]])
             ->assertUnauthorized();
 
-        $user = $this->createUser();
+        $user = $this->createUserWithRole(Role::SUPERVISOR);
         Sanctum::actingAs($user);
         $this->postJson('/api/v1/staging/validate-selected', ['staging_ids' => []])
             ->assertUnprocessable();

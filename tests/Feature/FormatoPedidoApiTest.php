@@ -13,9 +13,11 @@ class FormatoPedidoApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $autoAuthenticateApi = false;
+
     private function authenticate(): void
     {
-        Sanctum::actingAs(User::factory()->create());
+        Sanctum::actingAs($this->createUserWithRole(\App\Models\Role::SUPERVISOR));
     }
 
     private function buildMesesCantidad(array $overrides = []): array
@@ -91,6 +93,7 @@ class FormatoPedidoApiTest extends TestCase
 
     public function test_show_returns_404_when_plan_does_not_exist(): void
     {
+        $this->authenticate();
         $response = $this->getJson('/api/v1/formato-pedido/2026');
 
         $response->assertNotFound()

@@ -65,7 +65,7 @@ class EntregaStockFormApiTest extends TestCase
 
     private function entregaPayload(Producto $producto, Area $area, float $cantidad = 10, string $unidad = 'UND'): array
     {
-        return [
+        return $this->withEntregaPersona([
             'fecha' => '2026-07-24',
             'producto_id' => $producto->id,
             'area_id' => $area->id,
@@ -73,7 +73,7 @@ class EntregaStockFormApiTest extends TestCase
             'unidad' => $unidad,
             'quien_recibe' => 'Receptor formulario',
             'entregado_por' => 'Entregador formulario',
-        ];
+        ]);
     }
 
     public function test_consulta_inventario_operativo_expone_campos_para_formulario_entregas(): void
